@@ -4,7 +4,7 @@ import com.adamludzia.db.Database
 import com.adamludzia.model.Invoice
 import spock.lang.Specification
 
-class AbstractDatabaseTest extends Specification {
+abstract class AbstractDatabaseTest extends Specification {
 
     List<Invoice> invoices = (1..12).collect { invoice(it) }
     Database database = getDatabaseInstance()

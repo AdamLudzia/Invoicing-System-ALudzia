@@ -1,4 +1,4 @@
-package com.adamludzia.Controller;
+package com.adamludzia.controller;
 
 import com.adamludzia.model.Invoice;
 import com.adamludzia.service.RestService;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("invoices")
 public class Controller {
 
-
     @Autowired
     private final RestService restService;
 
@@ -26,29 +25,29 @@ public class Controller {
     public Controller(RestService restService) {
         this.restService = restService;
     }
-        @PostMapping
-        public int add(@RequestBody Invoice invoice){
-            return restService.save(invoice);
-        }
+    @PostMapping
+    public int add(@RequestBody Invoice invoice){
+        return restService.save(invoice);
+    }
 
-        @GetMapping
-        public List<Invoice> getAll() {
-            return restService.getAll();
-        }
+    @GetMapping
+    public List<Invoice> getAll() {
+        return restService.getAll();
+    }
 
-        @GetMapping("/{id}")
-        public ResponseEntity<Invoice> getById(@PathVariable int id){
-            return restService.getById(id);
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<Invoice> getById(@PathVariable int id){
+        return restService.getById(id);
+    }
 
-        @PutMapping("/{id}")
-        public ResponseEntity<?> update(@PathVariable int id, @RequestBody Invoice invoice){
-            return restService.update(id, invoice);
-        }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable int id, @RequestBody Invoice invoice){
+        return restService.update(id, invoice);
+    }
 
-        @DeleteMapping("/{id}")
-        public ResponseEntity<?> deleteById(@PathVariable int id){
-            return restService.deleteById(id);
-        }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable int id){
+        return restService.deleteById(id);
+    }
 
 }

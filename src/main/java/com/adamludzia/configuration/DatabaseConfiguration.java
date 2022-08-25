@@ -1,4 +1,4 @@
-package com.adamludzia.Configuration;
+package com.adamludzia.configuration;
 
 import com.adamludzia.db.Database;
 import com.adamludzia.db.impl.FileBasedDatabase;

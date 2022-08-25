@@ -25,8 +25,9 @@ public class Controller {
     public Controller(RestService restService) {
         this.restService = restService;
     }
+
     @PostMapping
-    public int add(@RequestBody Invoice invoice){
+    public int add(@RequestBody Invoice invoice) {
         return restService.save(invoice);
     }
 
@@ -36,17 +37,17 @@ public class Controller {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Invoice> getById(@PathVariable int id){
+    public ResponseEntity<Invoice> getById(@PathVariable int id) {
         return restService.getById(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable int id, @RequestBody Invoice invoice){
+    public ResponseEntity<?> update(@PathVariable int id, @RequestBody Invoice invoice) {
         return restService.update(id, invoice);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable int id){
+    public ResponseEntity<?> deleteById(@PathVariable int id) {
         return restService.deleteById(id);
     }
 

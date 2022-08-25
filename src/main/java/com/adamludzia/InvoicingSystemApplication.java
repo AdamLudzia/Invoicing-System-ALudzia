@@ -10,10 +10,8 @@ public class InvoicingSystemApplication {
 
 		System.out.println("Hello World!");
 
-
 		SpringApplication.run(InvoicingSystemApplication.class, args);
 	}
-
 }
 
 

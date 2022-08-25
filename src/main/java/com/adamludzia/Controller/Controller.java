@@ -25,37 +25,30 @@ public class Controller {
     @Autowired
     public Controller(RestService restService) {
         this.restService = restService;
-
-        @GetMapping("/helloworld")
-        public String helloWorldEndPoint () {
-            return "Hello World!";
-        }
-
-
+    }
         @PostMapping
-        public int add (@RequestBody Invoice invoice){
+        public int add(@RequestBody Invoice invoice){
             return restService.save(invoice);
         }
 
         @GetMapping
-        public List<Invoice> getAll () {
+        public List<Invoice> getAll() {
             return restService.getAll();
         }
 
         @GetMapping("/{id}")
-        public ResponseEntity<Invoice> getById ( @PathVariable int id){
+        public ResponseEntity<Invoice> getById(@PathVariable int id){
             return restService.getById(id);
         }
 
         @PutMapping("/{id}")
-        public ResponseEntity<?> update ( @PathVariable int id, @RequestBody Invoice invoice){
+        public ResponseEntity<?> update(@PathVariable int id, @RequestBody Invoice invoice){
             return restService.update(id, invoice);
         }
 
         @DeleteMapping("/{id}")
-        public ResponseEntity<?> deleteById ( @PathVariable int id){
+        public ResponseEntity<?> deleteById(@PathVariable int id){
             return restService.deleteById(id);
         }
 
-    }
 }

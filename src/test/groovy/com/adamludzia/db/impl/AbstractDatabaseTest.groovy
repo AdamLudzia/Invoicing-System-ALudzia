@@ -3,10 +3,11 @@ package com.adamludzia.db.impl
 import com.adamludzia.db.Database
 import com.adamludzia.model.Invoice
 import spock.lang.Specification
+import static com.adamludzia.TestHelpersTest.invoice
 
 abstract class AbstractDatabaseTest extends Specification {
 
-    List<Invoice> invoices = (1..12).collect { invoice(it) }
+    List<Invoice> invoices = (1..12).collect {invoice(it) }
     Database database = getDatabaseInstance()
 
     abstract Database getDatabaseInstance()

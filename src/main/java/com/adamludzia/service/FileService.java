@@ -33,5 +33,4 @@ public class FileService {
     public void updateFile(List<String> lines) throws IOException {
         Files.write(Path.of(filePathName), lines, StandardOpenOption.TRUNCATE_EXISTING);
     }
-
 }

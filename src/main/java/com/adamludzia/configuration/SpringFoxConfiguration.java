@@ -12,7 +12,7 @@ import springfox.documentation.service.Tag;
 import springfox.documentation.service.Contact;
 
 @Configuration
-public class SpringFoxConfig {
+public class SpringFoxConfiguration {
 
     @Bean
     public Docket docket() {
@@ -22,7 +22,8 @@ public class SpringFoxConfig {
             .paths(PathSelectors.any())
             .build()
             .tags(
-                new Tag("invoice-controller", "Controller used to list / add / update / delete invoices.")
+                new Tag("invoice-controller", "Controller used to list / add / update / delete invoices."), 
+                new Tag("tax-controller", "Controller that is calculating taxes")
             )
             .apiInfo(apiInfo());
     }
@@ -34,9 +35,9 @@ public class SpringFoxConfig {
             .title("Private Invoicing")
             .contact(
                 new Contact(
-                    "Piotr Swientek",
-                    "https://github.com/pswientek/",
-                    "swientek-dev@gmail.com")
+                    "Adam Ludzia",
+                    "https://github.com/AdamLudzia/",
+                    "adam.ludzia@gmail.com")
             )
             .build();
     }

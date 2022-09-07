@@ -1,16 +1,22 @@
 package com.adamludzia.controller
 
+import com.adamludzia.TestHelpersTest
 import com.adamludzia.model.Invoice
 import com.adamludzia.service.JsonService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Stepwise
 
 import java.time.LocalDate
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -23,7 +29,7 @@ class ControllerTest extends Specification {
     @Autowired
     private JsonService jsonService
 
-    private Invoice originalInvoice = TestHelpers.invoice(1)
+    private Invoice originalInvoice = TestHelpersTest.invoice(1)
 
     private LocalDate updatedDate = LocalDate.of(2022, 8, 12)
 
@@ -32,6 +38,7 @@ class ControllerTest extends Specification {
 
     def "empty array is returned when no invoices were added"() {
         when:
+        getAllInvoices().each { invoice -> deleteInvoice(invoice.id) }
         def response = mockMvc.perform(get("/invoices"))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -148,5 +155,20 @@ class ControllerTest extends Specification {
         and:
         mockMvc.perform(get("/invoices/$invoiceId"))
                 .andExpect(status().isNotFound())
+    }
+
+    List<Invoice> getAllInvoices() {
+        def response = mockMvc.perform(get(ENDPOINT))
+                .andExpect(status().isOk())
+                .andReturn()
+                .response
+                .contentAsString
+
+        jsonService.returnJsonAsInvoice(response, Invoice[])
+    }
+
+    void deleteInvoice(int id) {
+        mockMvc.perform(delete("$ENDPOINT/$id"))
+                .andExpect(status().isNoContent())
     }
 }

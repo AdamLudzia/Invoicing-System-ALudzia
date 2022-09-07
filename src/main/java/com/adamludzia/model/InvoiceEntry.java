@@ -2,11 +2,15 @@ package com.adamludzia.model;
 
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
+@AllArgsConstructor
+@Builder
 public class InvoiceEntry {
 
     @ApiModelProperty(value = "Product/service description", required = true, example = "Odkurzanie")
@@ -23,13 +27,5 @@ public class InvoiceEntry {
 
     @ApiModelProperty(value = "Tax rate", required = true)
     private Vat vatRate;
-
-    public InvoiceEntry(String description, int quantity, BigDecimal price, BigDecimal vatValue, Vat vatRate) {
-        this.description = description;
-        this.quantity = quantity;
-        this.price = price;
-        this.vatValue = vatValue;
-        this.vatRate = vatRate;
-    }
-
+    
 }

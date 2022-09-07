@@ -14,6 +14,7 @@ buildscript {
 		springDependencyManagmentVersion = '1.0.12.RELEASE'
 		springFoxUiVersion = '3.0.0'
 		springFoxStarterVersion = '3.0.0'
+		flywayVersion = '9.1.6'
 	}
 }
 plugins {
@@ -51,14 +52,24 @@ repositories {
 dependencies {
 	
 	annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+	compileOnly 'org.flywaydb:flyway-core:9.1.6'
 	
 	compileOnly "org.projectlombok:lombok:${lombokVersion}"
+
+	developmentOnly "org.springframework.boot:spring-boot-devtools"
 	
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	
+	implementation "org.springframework.boot:spring-boot-starter-jdbc"
 	
 	implementation "io.springfox:springfox-boot-starter:${springFoxStarterVersion}"
 	
 	implementation "io.springfox:springfox-swagger-ui:${springFoxUiVersion}"
+
+	runtimeOnly 'com.h2database:h2:1.4.200'
+	
+	runtimeOnly 'org.postgresql:postgresql:42.4.2'
 	
 	testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 	
@@ -75,17 +86,12 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-jacoco {
-	toolVersion = "0.8.7"
-	reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
-}
-
 jacocoTestCoverageVerification {
 	violationRules {
 		rule {
 			limit {
 				counter = 'BRANCH'
-				minimum = 0.85
+				minimum = 0.80
 			}
 		}
 
@@ -98,7 +104,8 @@ jacocoTestCoverageVerification {
 	}
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: 'pl/adamludzia/InvoicingSystemApplication.class')
+			fileTree(dir: it, exclude: ['com/adamludzia/InvoicingSystemApplication.class', 
+										'com/adamludzia/configuration/DatabaseConfiguration.class'])
 		}))
 	}
 }
@@ -127,9 +134,19 @@ jacocoTestReport {
 	}
 }
 
-tasks.withType(JavaCompile) {
-	options.compilerArgs << "-Xlint:all" << "-Xlint:-processing" << "-Werror"
+task testWithFileDatabase(type: Test) {
+	systemProperty 'spring.profiles.active', 'file'
 }
+task testWithMemoryDatabase(type: Test) {
+	systemProperty 'spring.profiles.active', 'memory'
+}
+task testWithSqlDatabase(type: Test) {
+	systemProperty 'spring.profiles.active', 'sql'
+}
+
+check.dependsOn testWithFileDatabase
+check.dependsOn testWithMemoryDatabase
+
 
 checkstyle {
 	showViolations = true

@@ -9,9 +9,13 @@ import java.time.LocalDate
 
 enum TestHelpersTest {
     static company(int id) {
-        new Company(("$id").repeat(10),
-                "ul. Żelazna 14/$id 81-159 Gdynia, Polska",
-                "Idea Solutions $id S.A.")
+        Company.builder()
+            .taxIdentificationNumber("$id")
+            .address("ul. Żelazna 14/$id 81-159 Gdynia, Polska")
+            .name("Idea Solutions $id S.A.")
+            .pensionInsurance(BigDecimal.TEN * BigDecimal.valueOf(id))
+            .healthInsurance(BigDecimal.valueOf(100) * BigDecimal.valueOf(id))
+            .build()
     }
 
     static product(int id) {

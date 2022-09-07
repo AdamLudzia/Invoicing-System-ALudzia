@@ -11,7 +11,9 @@ buildscript {
 		lombokVersion = '1.18.20'
 		spockVersion = '2.1-groovy-3.0'
 		springBootVersion = '2.7.2'
-		springDependencyManagmentVersion = '1.0.12.RELEASE' 
+		springDependencyManagmentVersion = '1.0.12.RELEASE'
+		springFoxUiVersion = '3.0.0'
+		springFoxStarterVersion = '3.0.0'
 	}
 }
 plugins {
@@ -32,7 +34,7 @@ plugins {
 	id 'io.spring.dependency-management' version "${springDependencyManagmentVersion}"
 }
 
-group = 'pl.futurecollars'
+group = 'com.adamludzia'
 version = '0.0.1-SNAPSHOT'
 
 configurations {
@@ -53,6 +55,10 @@ dependencies {
 	compileOnly "org.projectlombok:lombok:${lombokVersion}"
 	
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	
+	implementation "io.springfox:springfox-boot-starter:${springFoxStarterVersion}"
+	
+	implementation "io.springfox:springfox-swagger-ui:${springFoxUiVersion}"
 	
 	testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 	
@@ -97,6 +103,17 @@ jacocoTestCoverageVerification {
 	}
 }
 
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+		vendor = JvmVendorSpec.ADOPTOPENJDK
+	}
+}
+
+test {
+	finalizedBy jacocoTestReport
+}
+
 check {
 	finalizedBy jacocoTestCoverageVerification
 }
@@ -108,6 +125,10 @@ jacocoTestReport {
 		csv.required = false
 		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
 	}
+}
+
+tasks.withType(JavaCompile) {
+	options.compilerArgs << "-Xlint:all" << "-Xlint:-processing" << "-Werror"
 }
 
 checkstyle {

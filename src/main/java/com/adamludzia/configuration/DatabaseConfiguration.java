@@ -3,12 +3,14 @@ package com.adamludzia.configuration;
 import com.adamludzia.db.Database;
 import com.adamludzia.db.impl.FileBasedDatabase;
 import com.adamludzia.db.impl.InMemoryDatabase;
+import com.adamludzia.db.impl.SqlDatabase;
 import com.adamludzia.service.FileService;
 import com.adamludzia.service.IdService;
 import com.adamludzia.service.JsonService;
 import java.io.IOException;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.flywaydb.core.internal.jdbc.JdbcTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +48,12 @@ public class DatabaseConfiguration {
     public Database inMemoryDatabase() {
         log.debug("In memory database was created");
         return new InMemoryDatabase();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "sql")
+    public Database sqlDatabase(JdbcTemplate jdbcTemplate) {
+        return new SqlDatabase(jdbcTemplate);
     }
 
 }

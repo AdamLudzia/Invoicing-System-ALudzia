@@ -1,17 +1,22 @@
 package com.adamludzia.controller
 
 import com.adamludzia.model.Company
+import com.adamludzia.model.Vat
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import com.adamludzia.model.Car
+import com.adamludzia.model.Company
 import com.adamludzia.model.Invoice
+import com.adamludzia.model.InvoiceEntry
 import com.adamludzia.service.JsonService
 import com.adamludzia.service.TaxCalcResult
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import java.time.LocalDate
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import static com.adamludzia.TestHelpersTest.invoice
@@ -19,7 +24,7 @@ import static com.adamludzia.TestHelpersTest.invoice
 @AutoConfigureMockMvc
 @SpringBootTest
 @Unroll
-class TaxCalcControllerSpec extends Specification{
+class TaxCalcControllerTest extends Specification{
 
     static final String INVOICE_ENDPOINT = "/invoices"
     static final String TAX_CALCULATOR_ENDPOINT = "/tax"
@@ -120,15 +125,19 @@ class TaxCalcControllerSpec extends Specification{
     def "tax is calculated correctly when car is not used for personal purposes"() {
         given:
         def invoice = Invoice.builder()
+                .date(LocalDate.now())
+                .number("9999")
                 .seller(company(1))
                 .buyer(company(2))
                 .entries(List.of(
                         InvoiceEntry.builder()
                                 .vatValue(BigDecimal.valueOf(23.45))
+                                .vatRate(Vat.VAT_8)
                                 .price(BigDecimal.valueOf(100))
                                 .carExpenses(
                                         Car.builder()
                                                 .personalUsage(A)
+                                                .registrationPlate("GA 55997")
                                                 .build()
                                 )
                                 .build()
@@ -172,16 +181,22 @@ class TaxCalcControllerSpec extends Specification{
         given:
         def ourCompany = Company.builder()
                 .taxIdentificationNumber("1234")
+                .address("uber")
+                .name("cost 10 zł")
                 .pensionInsurance(514.57)
                 .healthInsurance(319.94)
                 .build()
 
         def invoiceWithIncome = Invoice.builder()
+                .date(LocalDate.now())
+                .number("guess qho")
                 .seller(ourCompany)
                 .buyer(company(2))
                 .entries(List.of(
                         InvoiceEntry.builder()
                                 .price(76011.62)
+                                .vatValue(0.0)
+                                .vatRate(Vat.VAT_0)
                                 .build()
                 ))
                 .build()
@@ -240,7 +255,7 @@ class TaxCalcControllerSpec extends Specification{
         (1..count).collect { id ->
             def invoice = invoice(id)
             invoice.id = addInvoiceAndReturnId(invoice)
-            return invoice
+            invoice
         }
     }
 

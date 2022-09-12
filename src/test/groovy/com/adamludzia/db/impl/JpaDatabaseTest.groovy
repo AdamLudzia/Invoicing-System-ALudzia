@@ -8,7 +8,7 @@ import org.springframework.test.annotation.IfProfileValue
 
 @DataJpaTest
 @IfProfileValue(name = "spring.profiles.active", value = "jpa")
-class JpaDatabaseSpec extends AbstractDatabaseTest {
+class JpaDatabaseTest extends AbstractDatabaseTest {
 
     @Autowired
     private InvoiceRepository invoiceRepository

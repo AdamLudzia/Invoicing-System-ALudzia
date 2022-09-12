@@ -2,18 +2,22 @@ package com.adamludzia.configuration;
 
 import com.adamludzia.db.Database;
 import com.adamludzia.db.impl.FileBasedDatabase;
+import com.adamludzia.db.impl.InvoiceRepository;
+import com.adamludzia.db.impl.JpaDatabase;
 import com.adamludzia.db.impl.InMemoryDatabase;
 import com.adamludzia.db.impl.SqlDatabase;
 import com.adamludzia.service.FileService;
 import com.adamludzia.service.IdService;
 import com.adamludzia.service.JsonService;
 import java.io.IOException;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.internal.jdbc.JdbcTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
+
+
 
 @Configuration
 @Slf4j
@@ -56,4 +60,9 @@ public class DatabaseConfiguration {
         return new SqlDatabase(jdbcTemplate);
     }
 
+    @Bean
+    @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "jpa")
+    public Database jpaDatabase(InvoiceRepository invoiceRepository) {
+        return new JpaDatabase(invoiceRepository);
+    }
 }

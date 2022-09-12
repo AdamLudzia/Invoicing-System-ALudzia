@@ -64,6 +64,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	
 	implementation "org.springframework.boot:spring-boot-starter-jdbc"
+
+	implementation "org.springframework.boot:spring-boot-starter-data-jpa:"
 	
 	implementation "io.springfox:springfox-boot-starter:${springFoxStarterVersion}"
 	
@@ -71,10 +73,11 @@ dependencies {
 
 	implementation "org.flywaydb:flyway-core:${flywayVersion}"
 
-	runtimeOnly 'com.h2database:h2:1.4.200'
+	runtimeOnly "com.h2database:h2:${h2Version}"
 	
-	runtimeOnly 'org.postgresql:postgresql:42.4.2'
-	
+	runtimeOnly "org.postgresql:postgresql:${postgresVersion}"
+
+
 	testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 	
 	testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
@@ -139,7 +142,11 @@ jacocoTestReport {
 }
 
 task testWithFileDatabase(type: Test) {
-	systemProperty 'spring.profiles.active', 'file'
+	systemProperty 'spring.profiles.active', 'sql-pg'
+}
+
+task testWithJpaDatabase(type: Test) {
+	systemProperty 'spring.progiles.active', 'jpa'
 }
 task testWithMemoryDatabase(type: Test) {
 	systemProperty 'spring.profiles.active', 'memory'
@@ -150,8 +157,6 @@ task testWithSqlDatabase(type: Test) {
 
 check.dependsOn testWithFileDatabase
 check.dependsOn testWithMemoryDatabase
-check.dependsOn testWithSqlDatabase
-
 
 checkstyle {
 	showViolations = true

@@ -1,94 +1,56 @@
 package com.adamludzia.service
 
 import com.adamludzia.db.Database
-import com.adamludzia.db.impl.InMemoryDatabase
-import com.adamludzia.model.Invoice
+import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
-import static com.adamludzia.TestHelpersTest.invoice
-
-
 
 class InvoiceServiceUnitTest extends Specification {
+    @Autowired
     private InvoiceService service
-    private List<Invoice> invoices
-
+    
+    @Autowired
+    private Database database
     def setup() {
-        Database db = new InMemoryDatabase()
-        service = new InvoiceService(db)
-
-        invoices = (1..12).collect { invoice(it) }
+        database = Mock()
+        service = new InvoiceService(database)
     }
-
-    def "should save invoices returning sequential id, invoice should have id set to correct value, get by id returns saved invoice"() {
-        when:
-        def ids = invoices.collect({ service.save(it) })
-
-        then:
-        ids == (1..invoices.size()).collect()
-        ids.forEach({ assert service.getById(it).isPresent() })
-        ids.forEach({ assert service.getById(it).get().getId() == it })
-        ids.forEach({ assert service.getById(it).get() == invoices.get(it - 1) })
-    }
-
-    def "get by id returns empty optional when there is no invoice with given id"() {
-        expect:
-        !service.getById(1).isPresent()
-    }
-
-    def "get all returns empty collection if there were no invoices"() {
-        expect:
-        service.getAll().isEmpty()
-    }
-
-    def "get all returns all invoices in the database, deleted invoice is not returned"() {
+    def "calling save() should delegate to database save() method"() {
         given:
-        invoices.forEach({ service.save(it) })
-
-        expect:
-        service.getAll().size() == invoices.size()
-        service.getAll().forEach({ assert it == invoices.get(it.getId() - 1) })
-
+        def invoice = invoice(1)
         when:
-        service.delete(1)
-
+        service.save(invoice)
         then:
-        service.getAll().size() == invoices.size() - 1
-        service.getAll().forEach({ assert it == invoices.get(it.getId() - 1) })
-        service.getAll().forEach({ assert it.getId() != 1 })
+        1 * database.save(invoice)
     }
-
-    def "can delete all invoices"() {
+    def "calling delete() should delegate to database delete() method"() {
         given:
-        invoices.forEach({ service.save(it) })
-
+        def invoiceId = 15
         when:
-        invoices.forEach({ service.delete(it.getId()) })
-
+        service.delete(invoiceId)
         then:
-        service.getAll().isEmpty()
+        1 * database.delete(invoiceId)
     }
-
-    def "deleting not existing invoice returns Optional.empty()"() {
-        expect:
-        service.delete(123) == Optional.empty()
-    }
-
-    def "it's possible to update the invoice, previous invoice is returned"() {
+    def "calling getById() should delegate to database getById() method"() {
         given:
-        def originalInvoice = invoices.get(0)
-        int id = service.save(originalInvoice)
-
+        def invoiceId = 99
         when:
-        def result = service.update(id, invoices.get(1))
-
+        service.getById(invoiceId)
         then:
-        service.getById(id).get() == invoices.get(1)
-        result == Optional.of(originalInvoice)
+        1 * database.getById(invoiceId)
     }
-
-    def "updating not existing invoice returns Optional.empty()"() {
-        expect:
-        service.update(213, invoices.get(1)) == Optional.empty()
+    def "calling getAll() should delegate to database getAll() method"() {
+        when:
+        service.getAll()
+        then:
+        1 * database.getAll()
     }
-
+    def "calling update() should delegate to database update() method"() {
+        given:
+        def invoice = invoice(1)
+        invoice.id = 1
+        when:
+        service.update(invoice.getId(), invoice)
+        then:
+        1 * database.update(invoice.getId(), invoice)
+    }
 }

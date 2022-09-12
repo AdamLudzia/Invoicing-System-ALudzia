@@ -1,6 +1,5 @@
 package com.adamludzia.controller
 
-import com.adamludzia.model.Company
 import com.adamludzia.model.Vat
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -11,12 +10,14 @@ import com.adamludzia.model.Car
 import com.adamludzia.model.Company
 import com.adamludzia.model.Invoice
 import com.adamludzia.model.InvoiceEntry
+import com.adamludzia.model.Vat
 import com.adamludzia.service.JsonService
 import com.adamludzia.service.TaxCalcResult
 import spock.lang.Specification
 import spock.lang.Unroll
 
 import java.time.LocalDate
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import static com.adamludzia.TestHelpersTest.invoice
@@ -134,6 +135,7 @@ class TaxCalcControllerTest extends Specification{
                                 .vatValue(BigDecimal.valueOf(23.45))
                                 .vatRate(Vat.VAT_8)
                                 .price(BigDecimal.valueOf(100))
+                                .quantity(1.0)                        
                                 .carExpenses(
                                         Car.builder()
                                                 .personalUsage(A)
@@ -196,17 +198,23 @@ class TaxCalcControllerTest extends Specification{
                         InvoiceEntry.builder()
                                 .price(76011.62)
                                 .vatValue(0.0)
+                                .quantity(1.0)
                                 .vatRate(Vat.VAT_0)
                                 .build()
                 ))
                 .build()
 
         def invoiceWithCosts = Invoice.builder()
+                .date(LocalDate.now())
+                .number("guess who")
                 .seller(company(4))
                 .buyer(ourCompany)
                 .entries(List.of(
                         InvoiceEntry.builder()
                                 .price(11329.47)
+                                .vatValue(0.0)
+                                .quantity(1.0)
+                                .vatRate(Vat.VAT_0)
                                 .build()
                 ))
                 .build()
@@ -251,7 +259,7 @@ class TaxCalcControllerTest extends Specification{
         jsonService.returnJsonAsInvoice(response, TaxCalcResult)
     }
 
-    List<Invoice> addUniqueInvoices(int count) {
+    List<Invoice> addUniqueInvoices(long count) {
         (1..count).collect { id ->
             def invoice = invoice(id)
             invoice.id = addInvoiceAndReturnId(invoice)
@@ -259,7 +267,7 @@ class TaxCalcControllerTest extends Specification{
         }
     }
 
-    int addInvoiceAndReturnId(Invoice invoice) {
+    long addInvoiceAndReturnId(Invoice invoice) {
         Integer.valueOf(
                 mockMvc.perform(
                         post(INVOICE_ENDPOINT)
@@ -283,7 +291,7 @@ class TaxCalcControllerTest extends Specification{
         jsonService.returnJsonAsInvoice(response, Invoice[])
     }
 
-    void deleteInvoice(int id) {
+    void deleteInvoice(long id) {
         mockMvc.perform(delete("$INVOICE_ENDPOINT/$id"))
                 .andExpect(status().isNoContent())
     }

@@ -4,6 +4,7 @@ import com.adamludzia.db.Database
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.internal.jdbc.JdbcTemplate
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 
 import javax.sql.DataSource
 
@@ -22,10 +23,7 @@ class SqlDatabaseTest extends AbstractDatabaseTest {
         flyway.clean()
         flyway.migrate()
 
-        def database = new SqlDatabase(jdbcTemplate)
-        database.initVatRatesMap() // need to call explicity because we do not creat it as spring bean
-
-        database
+        new SqlDatabase(jdbcTemplate)
     }
 }
 

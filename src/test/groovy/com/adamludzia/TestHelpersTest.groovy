@@ -8,7 +8,7 @@ import com.adamludzia.model.Vat
 import java.time.LocalDate
 
 enum TestHelpersTest {
-    static company(int id) {
+    static company(long id) {
         Company.builder()
             .taxIdentificationNumber("$id")
             .address("ul. Żelazna 14/$id 81-159 Gdynia, Polska")
@@ -18,7 +18,7 @@ enum TestHelpersTest {
             .build()
     }
 
-    static product(int id) {
+    static product(long id) {
         InvoiceEntry.builder()
                 .description("Antenna matching")
                 .quantity(1)
@@ -28,7 +28,7 @@ enum TestHelpersTest {
                 .build()
     }
 
-    static invoice(int id) {
+    static invoice(long id) {
         Invoice.builder()
                 .date(LocalDate.now())
                 .number("2022/0101/2564/$id")

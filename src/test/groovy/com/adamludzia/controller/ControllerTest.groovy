@@ -52,7 +52,7 @@ class ControllerTest extends Specification {
 
     def "add single invoice"() {
         given:
-        def invoiceAsJson = jsonService.invoiceAsJson(originalInvoice)
+        def invoiceAsJson = jsonService.objectAsJson(originalInvoice)
 
         when:
         invoiceId = Integer.valueOf(
@@ -113,7 +113,7 @@ class ControllerTest extends Specification {
         def modifiedInvoice = originalInvoice
         modifiedInvoice.date = updatedDate
 
-        def invoiceAsJson = jsonService.invoiceAsJson(modifiedInvoice)
+        def invoiceAsJson = jsonService.objectAsJson(modifiedInvoice)
 
         expect:
         mockMvc.perform(

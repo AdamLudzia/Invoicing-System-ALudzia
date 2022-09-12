@@ -20,10 +20,10 @@ public class FileBasedDatabase implements Database {
     private JsonService jsonService;
 
     @Override
-    public int save(Invoice invoice) {
+    public long save(Invoice invoice) {
         try {
             invoice.setId(idService.getNextIdAndIncrement(idFileService));
-            fileService.appendLineToFile(jsonService.invoiceAsJson(invoice));
+            fileService.appendLineToFile(jsonService.objectAsJson(invoice));
 
             return invoice.getId();
         } catch (IOException e) {
@@ -32,7 +32,7 @@ public class FileBasedDatabase implements Database {
     }
 
     @Override
-    public Optional<Invoice> getById(int id) {
+    public Optional<Invoice> getById(long id) {
         try {
             return fileService.readAllLines()
                 .stream()
@@ -57,7 +57,7 @@ public class FileBasedDatabase implements Database {
     }
 
     @Override
-    public Optional<Invoice> update(int id, Invoice updatedInvoice) {
+    public Optional<Invoice> update(long id, Invoice updatedInvoice) {
         try {
             List<String> allInvoices = fileService.readAllLines();
             var listWithoutInvoiceWithGivenId = allInvoices
@@ -66,7 +66,7 @@ public class FileBasedDatabase implements Database {
                 .collect(Collectors.toList());
 
             updatedInvoice.setId(id);
-            listWithoutInvoiceWithGivenId.add(jsonService.invoiceAsJson(updatedInvoice));
+            listWithoutInvoiceWithGivenId.add(jsonService.objectAsJson(updatedInvoice));
 
             fileService.updateFile(listWithoutInvoiceWithGivenId);
 
@@ -81,7 +81,7 @@ public class FileBasedDatabase implements Database {
     }
 
     @Override
-    public Optional<Invoice> delete(int id) {
+    public Optional<Invoice> delete(long id) {
         try {
             var allInvoices = fileService.readAllLines();
 
@@ -104,7 +104,7 @@ public class FileBasedDatabase implements Database {
         }
     }
 
-    private boolean containsId(String line, int id) {
-        return line.contains("\"id\":" + id + ",");
+    private boolean containsId(String line, long id) {
+        return line.contains("\"id\":" + id + ",\"number\"");
     }
 }

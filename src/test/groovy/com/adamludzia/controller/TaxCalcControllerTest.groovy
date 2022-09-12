@@ -1,5 +1,6 @@
 package com.adamludzia.controller
 
+import com.adamludzia.model.Company
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -18,7 +19,7 @@ import static com.adamludzia.TestHelpersTest.invoice
 @AutoConfigureMockMvc
 @SpringBootTest
 @Unroll
-class TaxCalculatorControllerSpec extends Specification{
+class TaxCalcControllerSpec extends Specification{
 
     static final String INVOICE_ENDPOINT = "/invoices"
     static final String TAX_CALCULATOR_ENDPOINT = "/tax"
@@ -35,15 +36,15 @@ class TaxCalculatorControllerSpec extends Specification{
 
     def "zeros are returned when there are no invoices in the system"() {
         when:
-        def taxCalculatorResponse = calculateTax("0")
+        def taxCalcResponse = calculateTax(company(0))
 
         then:
-        taxCalculatorResponse.income == 0
-        taxCalculatorResponse.costs == 0
-        taxCalculatorResponse.earnings == 0
-        taxCalculatorResponse.incomingVat == 0
-        taxCalculatorResponse.outgoingVat == 0
-        taxCalculatorResponse.vatToReturn == 0
+        taxCalcResponse.income == 0
+        taxCalcResponse.costs == 0
+        taxCalcResponse.earnings == 0
+        taxCalcResponse.incomingVat == 0
+        taxCalcResponse.outgoingVat == 0
+        taxCalcResponse.vatToReturn == 0
     }
 
     def "zeros are returned when tax id is not matching"() {
@@ -51,15 +52,15 @@ class TaxCalculatorControllerSpec extends Specification{
         addUniqueInvoices(10)
 
         when:
-        def taxCalculatorResponse = calculateTax("no_match")
+        def taxCalcResponse = calculateTax(company(-1))
 
         then:
-        taxCalculatorResponse.income == 0
-        taxCalculatorResponse.costs == 0
-        taxCalculatorResponse.earnings == 0
-        taxCalculatorResponse.incomingVat == 0
-        taxCalculatorResponse.outgoingVat == 0
-        taxCalculatorResponse.vatToReturn == 0
+        taxCalcResponse.income == 0
+        taxCalcResponse.costs == 0
+        taxCalcResponse.earnings == 0
+        taxCalcResponse.incomingVat == 0
+        taxCalcResponse.outgoingVat == 0
+        taxCalcResponse.vatToReturn == 0
     }
 
     def "sum of all products is returned when tax id is matching"() {
@@ -67,37 +68,37 @@ class TaxCalculatorControllerSpec extends Specification{
         addUniqueInvoices(10)
 
         when:
-        def taxCalculatorResponse = calculateTax("5")
+        def taxCalcResponse = calculateTax(company(5))
 
         then:
-        taxCalculatorResponse.income == 30000
-        taxCalculatorResponse.costs == 0
-        taxCalculatorResponse.earnings == 30000
-        taxCalculatorResponse.incomingVat == 2400.0
-        taxCalculatorResponse.outgoingVat == 0
-        taxCalculatorResponse.vatToReturn == 2400.0
+        taxCalcResponse.income == 30000
+        taxCalcResponse.costs == 0
+        taxCalcResponse.earnings == 30000
+        taxCalcResponse.incomingVat == 2400.0
+        taxCalcResponse.outgoingVat == 0
+        taxCalcResponse.vatToReturn == 2400.0
 
         when:
-        taxCalculatorResponse = calculateTax("10")
+        taxCalcResponse = calculateTax(company(10))
 
         then:
-        taxCalculatorResponse.income == 110000
-        taxCalculatorResponse.costs == 0
-        taxCalculatorResponse.earnings == 110000
-        taxCalculatorResponse.incomingVat == 8800.0
-        taxCalculatorResponse.outgoingVat == 0
-        taxCalculatorResponse.vatToReturn == 8800.0
+        taxCalcResponse.income == 110000
+        taxCalcResponse.costs == 0
+        taxCalcResponse.earnings == 110000
+        taxCalcResponse.incomingVat == 8800.0
+        taxCalcResponse.outgoingVat == 0
+        taxCalcResponse.vatToReturn == 8800.0
 
         when:
-        taxCalculatorResponse = calculateTax("15")
+        taxCalcResponse = calculateTax(company(15))
 
         then:
-        taxCalculatorResponse.income == 0
-        taxCalculatorResponse.costs == 30000
-        taxCalculatorResponse.earnings == -30000
-        taxCalculatorResponse.incomingVat == 0
-        taxCalculatorResponse.outgoingVat == 2400.0
-        taxCalculatorResponse.vatToReturn == -2400.0
+        taxCalcResponse.income == 0
+        taxCalcResponse.costs == 30000
+        taxCalcResponse.earnings == -30000
+        taxCalcResponse.incomingVat == 0
+        taxCalcResponse.outgoingVat == 2400.0
+        taxCalcResponse.vatToReturn == -2400.0
     }
 
     def "correct values are returned when company was buyer and seller"() {
@@ -105,40 +106,149 @@ class TaxCalculatorControllerSpec extends Specification{
         addUniqueInvoices(15) // sellers: 1-15, buyers: 10-25, 10-15 overlapping
 
         when:
-        def taxCalculatorResponse = calculateTax("12")
+        def taxCalcResponse = calculateTax(company(12))
 
         then:
-        taxCalculatorResponse.income == 156000
-        taxCalculatorResponse.costs == 6000
-        taxCalculatorResponse.earnings == 150000
-        taxCalculatorResponse.incomingVat == 12480.0
-        taxCalculatorResponse.outgoingVat == 480.0
-        taxCalculatorResponse.vatToReturn == 12000.0
+        taxCalcResponse.income == 156000
+        taxCalcResponse.costs == 6000
+        taxCalcResponse.earnings == 150000
+        taxCalcResponse.incomingVat == 12480.0
+        taxCalcResponse.outgoingVat == 480.0
+        taxCalcResponse.vatToReturn == 12000.0
     }
 
-    TaxCalcResult calculateTax(String taxIdentificationNumber) {
-        def response = mockMvc.perform(get("$TAX_CALCULATOR_ENDPOINT/$taxIdentificationNumber"))
+    def "tax is calculated correctly when car is not used for personal purposes"() {
+        given:
+        def invoice = Invoice.builder()
+                .seller(company(1))
+                .buyer(company(2))
+                .entries(List.of(
+                        InvoiceEntry.builder()
+                                .vatValue(BigDecimal.valueOf(23.45))
+                                .price(BigDecimal.valueOf(100))
+                                .carExpenses(
+                                        Car.builder()
+                                                .personalUsage(A)
+                                                .build()
+                                )
+                                .build()
+                ))
+                .build()
+
+        addInvoiceAndReturnId(invoice)
+
+        when:
+        def taxCalcResponse = calculateTax(invoice.getSeller())
+
+        then: "no proportion - it applies only when you are the buyer"
+        taxCalcResponse.income == income
+        taxCalcResponse.costs == costs
+        taxCalcResponse.earnings == earnings
+        taxCalcResponse.incomingVat == iVat
+        taxCalcResponse.outgoingVat == oVat
+        taxCalcResponse.vatToReturn == vToReturn
+
+
+        when:
+        taxCalcResponse = calculateTax(invoice.getBuyer())
+
+        then: "proportion applied - it applies when you are the buyer"
+        taxCalcResponse.income == income2
+        taxCalcResponse.costs == costs2
+        taxCalcResponse.earnings == earnings2
+        taxCalcResponse.incomingVat == iVat2
+        taxCalcResponse.outgoingVat == oVat2
+        taxCalcResponse.vatToReturn == vToReturn2
+
+        where:
+        A       ||   income  |   costs   |   earnings    |   iVat    |   oVat    |   vToReturn |   income2 |   costs2  |   earnings2   |   iVat2   |   oVat2   |   vToReturn2
+        true    ||   100     |   0       |   100         |   23.45   |   0       |   23.45     |   0       |   111.73  |   -111.73     |   0       |   23.45   |   -23.45
+        false   ||   100     |   0       |   100         |   23.45   |   0       |   23.45     |   0       |   100     |   -100        |   0       |   23.45   |   -23.45
+
+
+    }
+
+    def "All calculations are executed correctly"() {
+        given:
+        def ourCompany = Company.builder()
+                .taxIdentificationNumber("1234")
+                .pensionInsurance(514.57)
+                .healthInsurance(319.94)
+                .build()
+
+        def invoiceWithIncome = Invoice.builder()
+                .seller(ourCompany)
+                .buyer(company(2))
+                .entries(List.of(
+                        InvoiceEntry.builder()
+                                .price(76011.62)
+                                .build()
+                ))
+                .build()
+
+        def invoiceWithCosts = Invoice.builder()
+                .seller(company(4))
+                .buyer(ourCompany)
+                .entries(List.of(
+                        InvoiceEntry.builder()
+                                .price(11329.47)
+                                .build()
+                ))
+                .build()
+
+        addInvoiceAndReturnId(invoiceWithIncome)
+        addInvoiceAndReturnId(invoiceWithCosts)
+
+        when:
+        def taxCalculatorResponse = calculateTax(ourCompany)
+
+        then:
+        with(taxCalculatorResponse) {
+            income == 76011.62
+            costs == 11329.47
+            earnings == 64682.15
+            pensionInsurance == 514.57
+            earningsSubPensionInsurance == 64167.58
+            earningsSubPensionInsuranceRounded == 64168
+            incomeTax == 12191.92
+            healthInsuranceReference == 319.94
+            healthInsuranceReduce == 275.50
+            incomeTaxMinusHealthInsurance == 11916.42
+            finalIncomeTax == 11916
+
+            incomingVat == 0
+            outgoingVat == 0
+            vatToReturn == 0
+        }
+    }
+
+    TaxCalcResult calculateTax(Company company) {
+        def response = mockMvc.perform(
+                post("$TAX_CALCULATOR_ENDPOINT")
+                        .content(jsonService.objectAsJson(company))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
                 .andExpect(status().isOk())
                 .andReturn()
                 .response
                 .contentAsString
 
-        jsonService.returnJsonAsInvoice(response, TaxCalculatorResult)
+        jsonService.returnJsonAsInvoice(response, TaxCalcResult)
     }
 
     List<Invoice> addUniqueInvoices(int count) {
         (1..count).collect { id ->
             def invoice = invoice(id)
-            invoice.id = addInvoiceAndReturnId(jsonService.invoiceAsJson(invoice))
+            invoice.id = addInvoiceAndReturnId(invoice)
             return invoice
         }
     }
 
-    int addInvoiceAndReturnId(String invoiceAsJson) {
+    int addInvoiceAndReturnId(Invoice invoice) {
         Integer.valueOf(
                 mockMvc.perform(
                         post(INVOICE_ENDPOINT)
-                                .content(invoiceAsJson)
+                                .content(jsonService.objectAsJson(invoice))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                         .andExpect(status().isOk())

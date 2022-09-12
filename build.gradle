@@ -17,6 +17,7 @@ buildscript {
 		flywayVersion = '8.5.13'
 		postgresVersion = '42.4.2'
 		h2Version = '1.4.200'
+		mongoVersion = '3.12.11'
 	}
 }
 plugins {
@@ -73,6 +74,8 @@ dependencies {
 
 	implementation "org.flywaydb:flyway-core:${flywayVersion}"
 
+	implementation "org.mongodb:mongo-java-driver:${mongoVersion}"
+
 	runtimeOnly "com.h2database:h2:${h2Version}"
 	
 	runtimeOnly "org.postgresql:postgresql:${postgresVersion}"
@@ -94,6 +97,7 @@ tasks.named('test') {
 }
 
 jacocoTestCoverageVerification {
+	executionData tasks.withType(Test)
 	violationRules {
 		rule {
 			limit {
@@ -133,7 +137,8 @@ check {
 }
 
 jacocoTestReport {
-	dependsOn test // tests are required to run before generating the report
+	executionData tasks.withType(Test)
+	dependsOn check
 	reports {
 		xml.required = false
 		csv.required = false
@@ -151,12 +156,28 @@ task testWithJpaDatabase(type: Test) {
 task testWithMemoryDatabase(type: Test) {
 	systemProperty 'spring.profiles.active', 'memory'
 }
-task testWithSqlDatabase(type: Test) {
-	systemProperty 'spring.profiles.active', 'sql-pg'
+task testWithJpaFlywayDatabase(type: Test) {
+	systemProperty 'spring.progiles.active', 'jpa-flyway'
+}
+
+task testWithMongoDatabase(type: Test) {
+	systemProperty 'spring.progiles.active', 'mongo'
 }
 
 check.dependsOn testWithFileDatabase
 check.dependsOn testWithMemoryDatabase
+check.dependsOn testWithJpaDatabase
+check.dependsOn testWithJpaFlywayDatabase
+check.dependsOn testWithMongoDatabase
+
+String osName = System.getProperty("os.name").toLowerCase()
+if (osName.contains("mac")) {
+	task testWithPostgreSqlDatabase(type: Test) {
+		systemProperty 'spring.profiles.active', 'sql-pg'
+	}
+
+	check.dependsOn testWithPostgreSqlDatabase
+}
 
 checkstyle {
 	showViolations = true

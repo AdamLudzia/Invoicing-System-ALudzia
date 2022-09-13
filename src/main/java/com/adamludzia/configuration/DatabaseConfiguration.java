@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.flywaydb.core.internal.jdbc.JdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,11 +49,7 @@ public class DatabaseConfiguration {
     ) throws IOException {
         return new FileService(invoicesFile);
     }
-    @Bean
-    @@ -50,4 +68,53 @@
-        return new InMemoryDatabase();
-}
-
+    
     @Bean
     @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "sql")
     public Database sqlDatabase(JdbcTemplate jdbcTemplate) {

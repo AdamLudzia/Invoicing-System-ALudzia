@@ -3,7 +3,7 @@ package com.adamludzia.db.impl;
 import com.adamludzia.db.Database;
 import com.adamludzia.model.Company;
 import com.adamludzia.model.Invoice;
-import org.flywaydb.core.internal.jdbc.JdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

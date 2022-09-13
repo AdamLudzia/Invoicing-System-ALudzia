@@ -6,9 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import javax.transaction.Transactional;
-import org.flywaydb.core.internal.jdbc.JdbcTemplate;
-import org.flywaydb.core.internal.jdbc.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 public class CompanySqlDatabase extends AbstractSqlDatabase implements Database<Company> {
 
@@ -68,7 +68,7 @@ public class CompanySqlDatabase extends AbstractSqlDatabase implements Database<
     }
 
     private RowMapper<Company> companyRowMapper() {
-        return (rs) ->
+        return (rs, rowNr) ->
             Company.builder()
                 .id(rs.getLong("id"))
                 .taxIdentificationNumber(rs.getString("tax_identification_number"))

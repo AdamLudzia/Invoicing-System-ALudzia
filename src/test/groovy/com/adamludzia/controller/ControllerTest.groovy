@@ -4,14 +4,11 @@ import com.adamludzia.TestHelpersTest
 import com.adamludzia.db.Database
 import com.adamludzia.model.Invoice
 import com.adamludzia.service.JsonService
-import com.mongodb.client.MongoDatabase
-import org.apache.catalina.core.ApplicationContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import spock.lang.Requires
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Stepwise

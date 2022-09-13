@@ -2,7 +2,6 @@ package com.adamludzia.db.impl;
 
 import com.adamludzia.db.Database;
 import com.adamludzia.model.IdInterface;
-import com.adamludzia.model.Invoice;
 import com.adamludzia.service.FileService;
 import com.adamludzia.service.IdService;
 import com.adamludzia.service.JsonService;
@@ -107,6 +106,6 @@ public class FileBasedDatabase<T extends IdInterface>  implements Database<T> {
     }
 
     private boolean containsId(String line, long id) {
-        return line.contains("\"id\":" + id + ",\"number\"");
+        return line.contains("\"id\":" + id + ",");
     }
 }

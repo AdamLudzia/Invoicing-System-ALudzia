@@ -2,7 +2,7 @@ package com.adamludzia.db.impl
 
 import com.adamludzia.db.Database
 import org.flywaydb.core.Flyway
-import org.flywaydb.core.internal.jdbc.JdbcTemplate
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 

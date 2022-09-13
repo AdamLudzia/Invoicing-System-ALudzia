@@ -3,6 +3,7 @@ package com.adamludzia.controller;
 import com.adamludzia.model.Company;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.sql.SQLException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,6 @@ public interface TaxCalcApi {
 
     @ApiOperation(value = "Get the value of taxes")
     @PostMapping
-    TaxCalcResult calculateTaxes(@RequestBody Company company);
+    TaxCalcResult calculateTaxes(@RequestBody Company company) throws SQLException;
 
 }

@@ -18,7 +18,7 @@ public class SpringFoxConfiguration {
     public Docket docket() {
         return new Docket(DocumentationType.SWAGGER_2)
             .select()
-            .apis(RequestHandlerSelectors.any())
+            .apis(RequestHandlerSelectors.basePackage("com.adamludzia"))
             .paths(PathSelectors.any())
             .build()
             .tags(

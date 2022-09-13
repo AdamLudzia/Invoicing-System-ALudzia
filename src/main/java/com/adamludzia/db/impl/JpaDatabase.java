@@ -2,7 +2,6 @@ package com.adamludzia.db.impl;
 
 import com.adamludzia.db.Database;
 import com.adamludzia.model.IdInterface;
-import com.adamludzia.model.Invoice;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

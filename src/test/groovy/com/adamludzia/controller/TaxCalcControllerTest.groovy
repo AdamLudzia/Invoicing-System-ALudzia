@@ -1,31 +1,18 @@
 package com.adamludzia.controller
 
-import com.adamludzia.model.Vat
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
 import com.adamludzia.model.Car
 import com.adamludzia.model.Company
 import com.adamludzia.model.Invoice
 import com.adamludzia.model.InvoiceEntry
 import com.adamludzia.model.Vat
-import com.adamludzia.service.JsonService
-import com.adamludzia.service.TaxCalcResult
-import spock.lang.Specification
 import spock.lang.Unroll
 
 import java.time.LocalDate
 
-import static com.adamludzia.TestHelpersTest.invoice
-
 import static com.adamludzia.TestHelpersTest.company
-import static com.adamludzia.TestHelpersTest.invoice
-
 
 @Unroll
-class TaxCalcControllerTest extends AbstractControllerTest {
+class TaxCalcControllerTest {
 
     def setup() {
         getAllInvoices().each { invoice -> deleteInvoice(invoice.id) }

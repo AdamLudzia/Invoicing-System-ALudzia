@@ -1,6 +1,7 @@
 package com.adamludzia.controller;
 
 import com.adamludzia.model.Company;
+import java.sql.SQLException;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +17,7 @@ public class TaxCalcController implements TaxCalcApi {
     private final TaxCalcService taxCalcService;
 
     @Override
-    public TaxCalcResult calculateTaxes(@RequestBody Company company) {
+    public TaxCalcResult calculateTaxes(@RequestBody Company company) throws SQLException {
         return taxCalcService.calculateTaxes(company);
     }
 }

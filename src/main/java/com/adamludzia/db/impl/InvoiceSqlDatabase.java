@@ -11,9 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import javax.transaction.Transactional;
-import org.flywaydb.core.internal.jdbc.JdbcTemplate;
-import org.flywaydb.core.internal.jdbc.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 public class InvoiceSqlDatabase extends AbstractSqlDatabase implements Database<Invoice> {

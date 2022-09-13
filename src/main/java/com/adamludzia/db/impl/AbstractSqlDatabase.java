@@ -3,7 +3,7 @@ package com.adamludzia.db.impl;
 import com.adamludzia.model.Company;
 import java.sql.PreparedStatement;
 import lombok.AllArgsConstructor;
-import org.flywaydb.core.internal.jdbc.JdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 @AllArgsConstructor

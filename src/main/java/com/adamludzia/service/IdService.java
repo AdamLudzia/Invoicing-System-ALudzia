@@ -11,7 +11,7 @@ public class IdService {
 
     private long nextId = 1;
 
-    public IdService(FileService fileService) throws IOException {
+    public IdService(FileService fileService) {
 
         try {
             List<String> lines = fileService.readAllLines();

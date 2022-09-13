@@ -4,6 +4,7 @@ import com.adamludzia.db.Database
 import com.adamludzia.db.impl.InMemoryDatabase
 import com.adamludzia.model.Invoice
 import spock.lang.Specification
+
 import static com.adamludzia.TestHelpersTest.invoice
 
 class InvoiceServiceIntegrationTest extends Specification {

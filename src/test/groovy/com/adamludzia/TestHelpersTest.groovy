@@ -22,7 +22,7 @@ enum TestHelpersTest {
     static product(long id) {
         InvoiceEntry.builder()
                 .description("Antenna matching")
-                .quantity(1)
+                .quantity(1.00)
                 .price((BigDecimal.valueOf(id * 2000)).setScale(2))
                 .vatValue((BigDecimal.valueOf(id * 2000 * 0.08)).setScale(2))
                 .vatRate(Vat.VAT_8)
@@ -58,6 +58,4 @@ enum TestHelpersTest {
     static List<Invoice> resetIds(List<Invoice> invoices) {
         invoices.forEach { invoice -> resetIds(invoice) }
     }
-
-
 }

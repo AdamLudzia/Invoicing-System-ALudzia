@@ -1,8 +1,7 @@
 package com.adamludzia.db.impl;
 
 import com.adamludzia.db.Database;
-import com.adamludzia.model.Invoice;
-import com.adamludzia.service.MongoIdService;
+import com.adamludzia.model.IdInterface;
 import com.mongodb.client.MongoCollection;
 import java.util.List;
 import java.util.Optional;
@@ -12,51 +11,51 @@ import lombok.AllArgsConstructor;
 import org.bson.Document;
 
 
-    @AllArgsConstructor
-    public class MongoBasedDatabase implements Database {
+@AllArgsConstructor
+public class MongoBasedDatabase<T extends IdInterface> implements Database<T> {
 
-        private MongoCollection<Invoice> invoices;
-        private MongoIdService idService;
+    private MongoCollection<T> types;
+    private MongoIdService idService;
 
-        @Override
-        public long save(Invoice invoice) {
+    @Override
+    public long save(T type) {
 
-            invoice.setId(idService.getNextIdAndIncrement());
-            invoices.insertOne(invoice);
+        type.setId(idService.getNextIdAndIncrement());
+        types.insertOne(type);
 
-            return invoice.getId();
-        }
-
-        @Override
-        public Optional<Invoice> getById(long id) {
-            return Optional.ofNullable(
-                invoices.find(idFilter(id)).first()
-            );
-        }
-
-        @Override
-        public List<Invoice> getAll() {
-            return StreamSupport
-                .stream(invoices.find().spliterator(), false)
-                .collect(Collectors.toList());
-        }
-
-        @Override
-        public Optional<Invoice> update(long id, Invoice updatedInvoice) {
-            updatedInvoice.setId(id);
-            return Optional.ofNullable(
-                invoices.findOneAndReplace(idFilter(id), updatedInvoice)
-            );
-        }
-
-        @Override
-        public Optional<Invoice> delete(long id) {
-            return Optional.ofNullable(
-                invoices.findOneAndDelete(idFilter(id))
-            );
-        }
-
-        private Document idFilter(long id) {
-            return new Document("_id", id);
-        }
+        return type.getId();
     }
+
+    @Override
+    public Optional<T> getById(long id) {
+        return Optional.ofNullable(
+            types.find(idFilter(id)).first()
+        );
+    }
+
+    @Override
+    public List<T> getAll() {
+        return StreamSupport
+            .stream(types.find().spliterator(), false)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<T> update(long id, T updatedType) {
+        updatedType.setId(id);
+        return Optional.ofNullable(
+            types.findOneAndReplace(idFilter(id), updatedType)
+        );
+    }
+
+    @Override
+    public Optional<T> delete(long id) {
+        return Optional.ofNullable(
+            types.findOneAndDelete(idFilter(id))
+        );
+    }
+
+    private Document idFilter(long id) {
+        return new Document("_id", id);
+    }
+}

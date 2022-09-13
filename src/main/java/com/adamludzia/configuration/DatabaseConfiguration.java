@@ -7,7 +7,7 @@ import com.adamludzia.db.Database;
 import com.adamludzia.db.impl.InvoiceRepository;
 import com.adamludzia.db.impl.JpaDatabase;
 import com.adamludzia.db.impl.MongoBasedDatabase;
-import com.adamludzia.service.MongoIdService;
+import com.adamludzia.db.impl.MongoIdService;
 import com.adamludzia.db.impl.SqlDatabase;
 import com.adamludzia.model.Invoice;
 import com.adamludzia.service.FileService;

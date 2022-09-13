@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Data
 @Builder
 @Entity
-public class Company {
+public class Company implements IdInterface {
 
     @JsonIgnore
     @Id

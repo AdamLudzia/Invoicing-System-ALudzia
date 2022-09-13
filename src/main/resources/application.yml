@@ -8,11 +8,11 @@ logging:
         boot: INFO
     com:
       adamludzia:
-        invoicing: WARN
+        invoicing: INFO
         invoicing.db: DEBUG
         
   spring:
     profiles:
-      active: mongo
+      active: file
     flyway:
       enabled: true

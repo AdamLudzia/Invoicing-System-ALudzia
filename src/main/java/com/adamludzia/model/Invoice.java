@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @Entity
-public class Invoice {
+public class Invoice implements IdInterface {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,11 +51,4 @@ public class Invoice {
     @ApiModelProperty(value = "List of products/services", required = true)
     private List<InvoiceEntry> entries;
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getId() {
-        return id;
-    }
 }

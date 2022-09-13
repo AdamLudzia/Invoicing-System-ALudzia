@@ -18,23 +18,14 @@ import spock.lang.Unroll
 
 import java.time.LocalDate
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import static com.adamludzia.TestHelpersTest.invoice
 
-@AutoConfigureMockMvc
-@SpringBootTest
+import static com.adamludzia.TestHelpersTest.company
+import static com.adamludzia.TestHelpersTest.invoice
+
+
 @Unroll
-class TaxCalcControllerTest extends Specification{
-
-    static final String INVOICE_ENDPOINT = "/invoices"
-    static final String TAX_CALCULATOR_ENDPOINT = "/tax"
-
-    @Autowired
-    MockMvc mockMvc
-
-    @Autowired
-    JsonService jsonService
+class TaxCalcControllerTest extends AbstractControllerTest {
 
     def setup() {
         getAllInvoices().each { invoice -> deleteInvoice(invoice.id) }
@@ -183,15 +174,15 @@ class TaxCalcControllerTest extends Specification{
         given:
         def ourCompany = Company.builder()
                 .taxIdentificationNumber("1234")
-                .address("uber")
-                .name("cost 10 zł")
+                .address("no address exception ;)")
+                .name("i don't care about name")
                 .pensionInsurance(514.57)
                 .healthInsurance(319.94)
                 .build()
 
         def invoiceWithIncome = Invoice.builder()
                 .date(LocalDate.now())
-                .number("guess qho")
+                .number("number s required")
                 .seller(ourCompany)
                 .buyer(company(2))
                 .entries(List.of(
@@ -206,7 +197,7 @@ class TaxCalcControllerTest extends Specification{
 
         def invoiceWithCosts = Invoice.builder()
                 .date(LocalDate.now())
-                .number("guess who")
+                .number("number is required")
                 .seller(company(4))
                 .buyer(ourCompany)
                 .entries(List.of(
@@ -244,56 +235,4 @@ class TaxCalcControllerTest extends Specification{
             vatToReturn == 0
         }
     }
-
-    TaxCalcResult calculateTax(Company company) {
-        def response = mockMvc.perform(
-                post("$TAX_CALCULATOR_ENDPOINT")
-                        .content(jsonService.objectAsJson(company))
-                        .contentType(MediaType.APPLICATION_JSON)
-        )
-                .andExpect(status().isOk())
-                .andReturn()
-                .response
-                .contentAsString
-
-        jsonService.returnJsonAsInvoice(response, TaxCalcResult)
-    }
-
-    List<Invoice> addUniqueInvoices(long count) {
-        (1..count).collect { id ->
-            def invoice = invoice(id)
-            invoice.id = addInvoiceAndReturnId(invoice)
-            invoice
-        }
-    }
-
-    long addInvoiceAndReturnId(Invoice invoice) {
-        Integer.valueOf(
-                mockMvc.perform(
-                        post(INVOICE_ENDPOINT)
-                                .content(jsonService.objectAsJson(invoice))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                        .andExpect(status().isOk())
-                        .andReturn()
-                        .response
-                        .contentAsString
-        )
-    }
-
-    List<Invoice> getAllInvoices() {
-        def response = mockMvc.perform(get(INVOICE_ENDPOINT))
-                .andExpect(status().isOk())
-                .andReturn()
-                .response
-                .contentAsString
-
-        jsonService.returnJsonAsInvoice(response, Invoice[])
-    }
-
-    void deleteInvoice(long id) {
-        mockMvc.perform(delete("$INVOICE_ENDPOINT/$id"))
-                .andExpect(status().isNoContent())
-    }
-
 }

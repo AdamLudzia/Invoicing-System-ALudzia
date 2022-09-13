@@ -1,59 +1,55 @@
 package com.adamludzia.db.impl;
 
 import com.adamludzia.db.Database;
+import com.adamludzia.model.IdInterface;
 import com.adamludzia.model.Invoice;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.AllArgsConstructor;
+import org.springframework.data.repository.CrudRepository;
 
 
 @AllArgsConstructor
-public class JpaDatabase implements Database {
+public class JpaDatabase<T extends IdInterface> implements Database<T> {
 
-    private final InvoiceRepository invoiceRepository;
+    private final CrudRepository<T, Long> repository;
 
     @Override
-    public long save(Invoice invoice) {
-        return invoiceRepository.save(invoice).getId();
+    public long save(T type) {
+       return repository.save(type).getId();
     }
 
     @Override
-    public Optional<Invoice> getById(long id) {
-        return invoiceRepository.findById(id);
+    public Optional<T> getById(long id) {
+        return repository.findById(id);
     }
 
     @Override
-    public List<Invoice> getAll() {
+    public List<T> getAll() {
         return StreamSupport
-            .stream(invoiceRepository.findAll().spliterator(), false)
+            .stream(repository.findAll().spliterator(), false)
             .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Invoice> update(long id, Invoice updatedInvoice) {
-        Optional<Invoice> invoiceOptional = getById(id);
+    public Optional<T> update(long id, T updatedType) {
+        Optional<T> typeOptional = getById(id);
 
-        if (invoiceOptional.isPresent()) {
-            Invoice invoice = invoiceOptional.get();
-
-            updatedInvoice.setId(id);
-            updatedInvoice.getBuyer().setId(invoice.getBuyer().getId());
-            updatedInvoice.getSeller().setId(invoice.getSeller().getId());
-
-            invoiceRepository.save(updatedInvoice);
+        if (typeOptional.isPresent()) {
+            repository.save(updatedType);
         }
 
-        return invoiceOptional;
+        return typeOptional;
     }
 
     @Override
-    public Optional<Invoice> delete(long id) {
-        Optional<Invoice> invoice = getById(id);
+    public Optional<T> delete(long id) {
+        Optional<T> type = getById(id);
 
-        invoice.ifPresent(invoiceRepository::delete);
+        type.ifPresent(repository::delete);
 
-        return invoice;
+        return type;
     }
 }

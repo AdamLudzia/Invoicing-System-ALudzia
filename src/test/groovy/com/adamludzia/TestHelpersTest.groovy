@@ -4,6 +4,7 @@ import com.adamludzia.model.Company
 import com.adamludzia.model.Invoice
 import com.adamludzia.model.InvoiceEntry
 import com.adamludzia.model.Vat
+import com.adamludzia.model.Car
 
 import java.time.LocalDate
 
@@ -25,6 +26,12 @@ enum TestHelpersTest {
                 .price((BigDecimal.valueOf(id * 2000)).setScale(2))
                 .vatValue((BigDecimal.valueOf(id * 2000 * 0.08)).setScale(2))
                 .vatRate(Vat.VAT_8)
+                .carExpenses(id % 2 == 0 ? null :
+                        Car.builder()
+                                .registrationPlate("XYZ")
+                                .personalUsage(false)
+                                .build()
+                )
                 .build()
     }
 
@@ -37,5 +44,20 @@ enum TestHelpersTest {
                 .entries((1..id).collect({ product(it) }))
                 .build()
     }
+
+    static Invoice resetIds(Invoice invoice) {
+        invoice.getBuyer().id = 0
+        invoice.getSeller().id = 0
+        invoice.entries.forEach {
+            it.id = 0
+            it.carExpenses?.id = 0
+        }
+        invoice
+    }
+
+    static List<Invoice> resetIds(List<Invoice> invoices) {
+        invoices.forEach { invoice -> resetIds(invoice) }
+    }
+
 
 }

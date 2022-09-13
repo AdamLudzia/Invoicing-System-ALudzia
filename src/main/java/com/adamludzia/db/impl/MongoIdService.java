@@ -1,4 +1,4 @@
-package com.adamludzia.service;
+package com.adamludzia.db.impl;
 
 import com.mongodb.client.MongoCollection;
 import javax.annotation.PostConstruct;

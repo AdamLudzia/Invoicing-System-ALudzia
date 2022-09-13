@@ -4,6 +4,8 @@ import com.adamludzia.db.Database
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
+import static com.adamludzia.TestHelpersTest.invoice
+
 class InvoiceServiceUnitTest extends Specification {
     @Autowired
     private InvoiceService service

@@ -1,0 +1,7 @@
+database: file
+  database.directory: db
+  database.invoices.file: invoices.txt
+  database.companies.file: companies.txt
+  database.id.file: id.txt
+  database.id.invoices.file: idInvoices.txt
+  database.id.companies.file: idCompanies.txt

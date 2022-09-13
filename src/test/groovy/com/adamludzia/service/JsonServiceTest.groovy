@@ -12,10 +12,10 @@ class JsonServiceTest extends Specification {
         def invoice = TestHelpersTest.invoice(12)
 
         when:
-        def invoiceAsString = jsonService.invoiceAsJson(invoice)
+        def invoiceAsString = jsonService.objectAsJson(invoice)
         System.out.println(invoiceAsString)
         and:
-        def invoiceFromJson = jsonService.returnJsonAsInvoice(invoiceAsString, Invoice.class)
+        def invoiceFromJson = jsonService.returnJsonAsObject(invoiceAsString, Invoice.class)
 
         then:
         invoice == invoiceFromJson

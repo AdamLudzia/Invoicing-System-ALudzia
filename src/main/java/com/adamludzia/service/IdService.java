@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class IdService {
 
-    private int nextId = 1;
+    private long nextId = 1;
 
-    public IdService(FileService fileService) throws IOException {
+    public IdService(FileService fileService) {
 
         try {
             List<String> lines = fileService.readAllLines();
@@ -26,7 +26,7 @@ public class IdService {
 
     }
 
-    public int getNextIdAndIncrement(FileService fileService) {
+    public long getNextIdAndIncrement(FileService fileService) {
         try {
             fileService.writeToFile(String.valueOf(nextId + 1));
             return nextId++;

@@ -1,6 +1,5 @@
 package com.adamludzia.service;
 
-import com.adamludzia.model.Invoice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -21,15 +20,15 @@ public class JsonService {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
-    public String invoiceAsJson(Invoice invoice) {
+    public String objectAsJson(Object object) {
         try {
-            return objectMapper.writeValueAsString(invoice);
+            return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Service error: failed to convert string to JSON", e);
         }
     }
 
-    public <T> T returnJsonAsInvoice(String json, Class<T> invoice) {
+    public <T> T returnJsonAsObject(String json, Class<T> invoice) {
         try {
             return objectMapper.readValue(json, invoice);
         } catch (JsonProcessingException e) {

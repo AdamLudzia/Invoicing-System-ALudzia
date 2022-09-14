@@ -12,7 +12,7 @@ import java.time.LocalDate
 import static com.adamludzia.TestHelpersTest.company
 
 @Unroll
-class TaxCalcControllerTest {
+class TaxCalcControllerTest extends AbstractControllerTest {
 
     def setup() {
         getAllInvoices().each { invoice -> deleteInvoice(invoice.id) }

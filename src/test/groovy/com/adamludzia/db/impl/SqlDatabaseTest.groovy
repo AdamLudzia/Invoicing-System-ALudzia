@@ -23,7 +23,7 @@ class SqlDatabaseTest extends AbstractDatabaseTest {
         flyway.clean()
         flyway.migrate()
 
-        new SqlDatabase(jdbcTemplate)
+        new InvoiceSqlDatabase(jdbcTemplate)
     }
 }
 

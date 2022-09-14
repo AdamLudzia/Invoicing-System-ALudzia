@@ -1,15 +1,18 @@
 package com.adamludzia.controller
 
-import spock.lang.Specification
+import org.springframework.http.MediaType
 import spock.lang.Unroll
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import static com.adamludzia.TestHelpersTest.company
+
 @Unroll
-class CompanyControllerTest extends Specification {
+class CompanyControllerTest extends AbstractControllerTest {
+    
     def setup() {
         getAllCompanies().each { company -> deleteCompany(company.id) }
     }
@@ -72,6 +75,7 @@ class CompanyControllerTest extends Specification {
         expect:
         mockMvc.perform(
                 delete("$COMPANY_ENDPOINT/$id")
+                        .with(csrf())
         )
                 .andExpect(status().isNotFound())
 
@@ -88,6 +92,7 @@ class CompanyControllerTest extends Specification {
                 put("$COMPANY_ENDPOINT/$id")
                         .content(companyAsJson(1))
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
         )
                 .andExpect(status().isNotFound())
 
@@ -106,6 +111,7 @@ class CompanyControllerTest extends Specification {
                 put("$COMPANY_ENDPOINT/$id")
                         .content(jsonService.objectAsJson(updatedCompany))
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
         )
                 .andExpect(status().isNoContent())
 

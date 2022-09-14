@@ -15,6 +15,7 @@ import spock.lang.Stepwise
 
 import java.time.LocalDate
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import static com.adamludzia.TestHelpersTest.resetIds
@@ -78,6 +79,7 @@ class ControllerTest extends Specification {
                         post(ENDPOINT)
                                 .content(invoiceAsJson)
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf())
                 )
                         .andExpect(status().isOk())
                         .andReturn()
@@ -156,21 +158,22 @@ class ControllerTest extends Specification {
                 put("$ENDPOINT/$invoiceId")
                         .content(invoiceAsJson)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
         )
                 .andExpect(status().isNoContent())
     }
 
     def "invoice can be deleted"() {
         expect:
-        mockMvc.perform(delete("$ENDPOINT/$invoiceId"))
+        mockMvc.perform(delete("$ENDPOINT/$invoiceId").with(csrf()))
                 .andExpect(status().isNoContent())
 
         and:
-        mockMvc.perform(delete("$ENDPOINT/$invoiceId"))
+        mockMvc.perform(delete("$ENDPOINT/$invoiceId").with(csrf()))
                 .andExpect(status().isNotFound())
 
         and:
-        mockMvc.perform(get("$ENDPOINT/$invoiceId"))
+        mockMvc.perform(get("$ENDPOINT/$invoiceId").with(csrf()))
                 .andExpect(status().isNotFound())
     }
 

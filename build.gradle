@@ -8,15 +8,15 @@
 
 buildscript {
 	ext{
-		lombokVersion = '1.18.20'
-		spockVersion = '2.1-groovy-3.0'
+		lombokVersion = '1.18.24'
+		spockVersion = '2.2-groovy-3.0'
 		springBootVersion = '2.7.3'
 		springDependencyManagmentVersion = '1.0.12.RELEASE'
 		springFoxUiVersion = '3.0.0'
 		springFoxStarterVersion = '3.0.0'
-		flywayVersion = '8.5.13'
-		postgresVersion = '42.4.2'
-		h2Version = '1.4.200'
+		flywayVersion = '9.3.0'
+		postgresVersion = '42.5.0'
+		h2Version = '2.1.214'
 		mongoVersion = '3.12.11'
 	}
 }
@@ -76,6 +76,10 @@ dependencies {
 
 	implementation "org.mongodb:mongo-java-driver:${mongoVersion}"
 
+	implementation "org.springframework.boot:spring-boot-starter-security"
+	
+	implementation "org.springframework.security:spring-security-test"
+
 	runtimeOnly "com.h2database:h2:${h2Version}"
 	
 	runtimeOnly "org.postgresql:postgresql:${postgresVersion}"
@@ -111,7 +115,8 @@ jacocoTestCoverageVerification {
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: ['com/adamludzia/InvoicingSystemApplication.class', 
-										'com/adamludzia/configuration/DatabaseConfiguration.class'])
+										'com/adamludzia/configuration/DatabaseConfiguration.class',
+										'com/adamludzia/config/*'])
 		}))
 	}
 }

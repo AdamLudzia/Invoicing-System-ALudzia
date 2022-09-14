@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import com.adamludzia.model.Company;
 import com.adamludzia.model.Invoice;
@@ -17,12 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import spock.lang.Specification;
 
 @AutoConfigureMockMvc
 @SpringBootTest
-class AbstractControllerSpec extends Specification {
+@WithMockUser
+class AbstractControllerTest extends Specification {
 
     static final String INVOICE_ENDPOINT = "/invoices";
     static final String COMPANY_ENDPOINT = "/companies";
@@ -52,36 +55,36 @@ class AbstractControllerSpec extends Specification {
 
     List<Invoice> addUniqueInvoices(int count) {
         (1..count).collect { id ->
-            def invoice = invoice(id)
-            invoice.id = addInvoiceAndReturnId(invoice)
+            def invoice = invoice(id);
+            invoice.id = addInvoiceAndReturnId(invoice);
             invoice
         }
     }
 
     List<Company> addUniqueCompanies(int count) {
         (1..count).collect { id ->
-            def company = company(id)
-            company.id = addCompanyAndReturnId(company)
+            def company = company(id);
+            company.id = addCompanyAndReturnId(company);
             company
         }
     }
 
     void deleteInvoice(long id) {
-        mockMvc.perform(delete("$INVOICE_ENDPOINT/$id"))
-            .andExpect(status().isNoContent())
+        mockMvc.perform(delete("$INVOICE_ENDPOINT/$id").with(csrf()))
+            .andExpect(status().isNoContent());
     }
 
     void deleteCompany(long id) {
-        mockMvc.perform(delete("$COMPANY_ENDPOINT/$id"))
-            .andExpect(status().isNoContent())
+        mockMvc.perform(delete("$COMPANY_ENDPOINT/$id").with(csrf()))
+            .andExpect(status().isNoContent());
     }
 
     Company getCompanyById(long id) {
-        getById(id, Company, COMPANY_ENDPOINT)
+        getById(id, Company, COMPANY_ENDPOINT);
     }
 
     String companyAsJson(long id) {
-        jsonService.objectAsJson(company(id))
+        jsonService.objectAsJson(company(id));
     }
 
     TaxCalcResult calculateTax(Company company) {
@@ -89,13 +92,14 @@ class AbstractControllerSpec extends Specification {
                 post(TAX_CALCULATOR_ENDPOINT)
                     .content(jsonService.objectAsJson(company))
                     .contentType(MediaType.APPLICATION_JSON)
+                    .with(csrf())
             )
             .andExpect(status().isOk())
             .andReturn()
             .response
-            .contentAsString
+            .contentAsString;
 
-        jsonService.returnJsonAsObject(response, TaxCalcResult)
+        jsonService.returnJsonAsObject(response, TaxCalcResult);
     }
 
     private <T> int addAndReturnId(T item, String endpoint) {
@@ -104,12 +108,13 @@ class AbstractControllerSpec extends Specification {
                     post(endpoint)
                         .content(jsonService.objectAsJson(item))
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
                 )
                 .andExpect(status().isOk())
                 .andReturn()
                 .response
                 .contentAsString
-        )
+        );
     }
 
     private <T> T getAll(Class<T> clazz, String endpoint) {
@@ -118,9 +123,9 @@ class AbstractControllerSpec extends Specification {
             .andExpect(status().isOk())
             .andReturn()
             .response
-            .contentAsString
+            .contentAsString;
 
-        jsonService.returnJsonAsObject(response, clazz)
+        jsonService.returnJsonAsObject(response, clazz);
     }
 
     private <T> T getById(long id, Class<T> clazz, String endpoint) {
@@ -128,9 +133,9 @@ class AbstractControllerSpec extends Specification {
             .andExpect(status().isOk())
             .andReturn()
             .response
-            .contentAsString
+            .contentAsString;
 
-        jsonService.returnJsonAsObject(invoiceAsString, clazz)
+        jsonService.returnJsonAsObject(invoiceAsString, clazz);
     }
 
 }

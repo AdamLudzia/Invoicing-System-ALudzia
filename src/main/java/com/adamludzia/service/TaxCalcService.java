@@ -8,11 +8,12 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 import com.adamludzia.db.Database;
 import com.adamludzia.model.Invoice;
 import com.adamludzia.model.InvoiceEntry;
 import java.util.function.Function;
+import org.springframework.stereotype.Service;
+
 
 @Service
 @AllArgsConstructor
@@ -95,6 +96,7 @@ public class TaxCalcService {
     private Predicate<Invoice> buyerPredicate(String taxIdentificationNumber) {
         return invoice -> taxIdentificationNumber.equals(invoice.getBuyer().getTaxIdentificationNumber());
     }
+    
     private BigDecimal visit(
         Predicate<Invoice> invoicePredicate,
         Function<InvoiceEntry, BigDecimal> invoiceEntryToValue
@@ -105,6 +107,4 @@ public class TaxCalcService {
             .map(invoiceEntryToValue)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
-
-
 }

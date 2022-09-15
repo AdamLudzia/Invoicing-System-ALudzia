@@ -10,7 +10,6 @@ import java.util.stream.StreamSupport;
 import lombok.AllArgsConstructor;
 import org.bson.Document;
 
-
 @AllArgsConstructor
 public class MongoBasedDatabase<T extends IdInterface> implements Database<T> {
 

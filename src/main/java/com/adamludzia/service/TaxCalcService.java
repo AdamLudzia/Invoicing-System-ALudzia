@@ -7,11 +7,11 @@ import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.function.Predicate;
-import lombok.AllArgsConstructor;
 import com.adamludzia.db.Database;
 import com.adamludzia.model.Invoice;
 import com.adamludzia.model.InvoiceEntry;
 import java.util.function.Function;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 

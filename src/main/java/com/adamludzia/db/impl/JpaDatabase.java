@@ -9,7 +9,6 @@ import java.util.stream.StreamSupport;
 import lombok.AllArgsConstructor;
 import org.springframework.data.repository.CrudRepository;
 
-
 @AllArgsConstructor
 public class JpaDatabase<T extends IdInterface> implements Database<T> {
 
@@ -17,7 +16,7 @@ public class JpaDatabase<T extends IdInterface> implements Database<T> {
 
     @Override
     public long save(T type) {
-       return repository.save(type).getId();
+        return repository.save(type).getId();
     }
 
     @Override

@@ -4,10 +4,11 @@ import com.adamludzia.model.Company;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.sql.SQLException;
+import com.adamludzia.service.TaxCalcResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.adamludzia.service.TaxCalcResult;
+
 
 @RequestMapping(value = "tax", produces = {"application/json;charset=UTF-8"})
 @Api(tags = {"tax-controller"})

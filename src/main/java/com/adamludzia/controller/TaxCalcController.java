@@ -3,10 +3,10 @@ package com.adamludzia.controller;
 import com.adamludzia.model.Company;
 import java.sql.SQLException;
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
 import com.adamludzia.service.TaxCalcResult;
 import com.adamludzia.service.TaxCalcService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController

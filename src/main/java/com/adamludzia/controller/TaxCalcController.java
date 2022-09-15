@@ -1,11 +1,11 @@
 package com.adamludzia.controller;
 
 import com.adamludzia.model.Company;
+import com.adamludzia.service.TaxCalcResult;
+import com.adamludzia.service.TaxCalcService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.adamludzia.service.TaxCalcResult;
-import com.adamludzia.service.TaxCalcService;
 
 @RestController
 @AllArgsConstructor

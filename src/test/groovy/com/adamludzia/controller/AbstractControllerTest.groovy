@@ -1,26 +1,23 @@
-package com.adamludzia.controller;
+package com.adamludzia.controller
 
-import static com.adamludzia.TestHelpersTest.company;
-import static com.adamludzia.TestHelpersTest.invoice;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import com.adamludzia.model.Company
+import com.adamludzia.model.Invoice
+import com.adamludzia.service.JsonService
+import com.adamludzia.service.TaxCalcResult
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.test.web.servlet.MockMvc
+import spock.lang.Specification
 
-import com.adamludzia.model.Company;
-import com.adamludzia.model.Invoice;
-import com.adamludzia.service.JsonService;
-import com.adamludzia.service.TaxCalcResult;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import spock.lang.Specification;
+import static com.adamludzia.TestHelpersTest.company
+import static com.adamludzia.TestHelpersTest.invoice
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -71,12 +68,12 @@ class AbstractControllerTest extends Specification {
 
     void deleteInvoice(long id) {
         mockMvc.perform(delete("$INVOICE_ENDPOINT/$id").with(csrf()))
-            .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent());
     }
 
     void deleteCompany(long id) {
         mockMvc.perform(delete("$COMPANY_ENDPOINT/$id").with(csrf()))
-            .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent());
     }
 
     Company getCompanyById(long id) {
@@ -90,50 +87,50 @@ class AbstractControllerTest extends Specification {
     TaxCalcResult calculateTax(Company company) {
         def response = mockMvc.perform(
                 post(TAX_CALCULATOR_ENDPOINT)
-                    .content(jsonService.objectAsJson(company))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .with(csrf())
-            )
-            .andExpect(status().isOk())
-            .andReturn()
-            .response
-            .contentAsString;
+                        .content(jsonService.objectAsJson(company))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andReturn()
+                .response
+                .contentAsString;
 
         jsonService.returnJsonAsObject(response, TaxCalcResult);
     }
 
     private <T> int addAndReturnId(T item, String endpoint) {
         Integer.valueOf(
-            mockMvc.perform(
-                    post(endpoint)
-                        .content(jsonService.objectAsJson(item))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
+                mockMvc.perform(
+                        post(endpoint)
+                                .content(jsonService.objectAsJson(item))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf())
                 )
-                .andExpect(status().isOk())
-                .andReturn()
-                .response
-                .contentAsString
+                        .andExpect(status().isOk())
+                        .andReturn()
+                        .response
+                        .contentAsString
         );
     }
 
     private <T> T getAll(Class<T> clazz, String endpoint) {
         def response = mockMvc.perform(get(endpoint))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andReturn()
-            .response
-            .contentAsString;
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn()
+                .response
+                .contentAsString;
 
         jsonService.returnJsonAsObject(response, clazz);
     }
 
     private <T> T getById(long id, Class<T> clazz, String endpoint) {
         def invoiceAsString = mockMvc.perform(get("$endpoint/$id"))
-            .andExpect(status().isOk())
-            .andReturn()
-            .response
-            .contentAsString;
+                .andExpect(status().isOk())
+                .andReturn()
+                .response
+                .contentAsString;
 
         jsonService.returnJsonAsObject(invoiceAsString, clazz);
     }

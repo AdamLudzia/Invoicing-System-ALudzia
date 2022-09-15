@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class FileBasedDatabase<T extends IdInterface>  implements Database<T> {
+public class FileBasedDatabase<T extends IdInterface> implements Database<T> {
 
     private IdService idService;
     private FileService fileService;
@@ -84,7 +84,7 @@ public class FileBasedDatabase<T extends IdInterface>  implements Database<T> {
     @Override
     public Optional<T> delete(long id) {
         try {
-            var allTypes  = fileService.readAllLines();
+            var allTypes= fileService.readAllLines();
 
             var updatedList = allTypes
                 .stream()
@@ -93,9 +93,9 @@ public class FileBasedDatabase<T extends IdInterface>  implements Database<T> {
 
             fileService.updateFile(updatedList);
 
-            allTypes .removeAll(updatedList);
+            allTypes.removeAll(updatedList);
 
-            if (allTypes .isEmpty()) {
+            if (allTypes.isEmpty()) {
                 return Optional.empty();
             }
             return Optional.of(jsonService.returnJsonAsObject(allTypes.get(0), clazz));

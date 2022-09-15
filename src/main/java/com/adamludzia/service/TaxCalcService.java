@@ -14,7 +14,6 @@ import java.util.function.Function;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 @Service
 @AllArgsConstructor
 public class TaxCalcService {

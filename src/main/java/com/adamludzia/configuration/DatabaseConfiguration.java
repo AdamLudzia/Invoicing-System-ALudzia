@@ -7,8 +7,8 @@ import com.adamludzia.service.FileService;
 import com.adamludzia.service.IdService;
 import com.adamludzia.service.JsonService;
 import java.io.IOException;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +35,7 @@ public class DatabaseConfiguration {
 
     @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "file")
     @Bean
-    public Database fileBasedDatabase()  throws IOException {
+    public Database fileBasedDatabase() throws IOException {
         log.debug("File based database was created");
         IdService idService = new IdService(new FileService(idFile));
         return new FileBasedDatabase(idService, new FileService(invoicesFile), new FileService(idFile), new JsonService());

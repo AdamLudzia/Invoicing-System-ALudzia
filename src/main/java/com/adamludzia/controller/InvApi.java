@@ -1,5 +1,6 @@
 package com.adamludzia.controller;
 
+import com.adamludzia.model.Invoice;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.adamludzia.model.Invoice;
 
 @RequestMapping("invoices")
 @Api(tags = {"invoice-controller"})

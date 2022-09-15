@@ -1,16 +1,16 @@
 package com.adamludzia.service;
 
+import com.adamludzia.db.Database;
 import com.adamludzia.model.Car;
 import com.adamludzia.model.Company;
+import com.adamludzia.model.Invoice;
+import com.adamludzia.model.InvoiceEntry;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Optional;
 import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.adamludzia.db.Database;
-import com.adamludzia.model.Invoice;
-import com.adamludzia.model.InvoiceEntry;
 
 @Service
 @AllArgsConstructor

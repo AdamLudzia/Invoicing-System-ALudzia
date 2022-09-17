@@ -1,31 +1,29 @@
 package com.adamludzia.db;
 
-import com.adamludzia.model.Invoice;
-import com.adamludzia.model.InvoiceEntry;
-import java.math.BigDecimal;
+import com.adamludzia.model.IdInterface;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
-public interface Database {
+public interface Database<T extends IdInterface> {
 
-    int save(Invoice invoice);
+    long save(T type);
 
-    Optional<Invoice> getById(int id);
+    Optional<T> getById(long id) throws SQLException;
 
-    List<Invoice> getAll();
+    List<T> getAll() throws SQLException;
 
-    Optional<Invoice> update(int id, Invoice updatedInvoice);
+    Optional<T> update(long id, T updatedType) throws SQLException;
 
-    Optional<Invoice> delete(int id);
+    Optional<T> delete(long id) throws SQLException;
     
-    default BigDecimal visit(Predicate<Invoice> invoicePredicate, Function<InvoiceEntry, BigDecimal> invoiceEntryToValue) {
-        return getAll().stream()
-            .filter(invoicePredicate)
-            .flatMap(i -> i.getEntries().stream())
-            .map(invoiceEntryToValue)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    default void reset() throws SQLException {
+        getAll().forEach(invoice -> {
+            try {
+                delete(invoice.getId());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
-
 }

@@ -1,18 +1,31 @@
 server:
   port: 7777
 
-invoicing-system:
-  database: file
-  database.directory: db
-  database.invoices.file: invoices.txt
-  database.id.file: idFile.txt
-
 logging:
   level:
     org:
       springframework:
         boot: INFO
-    pl:
-      futurecollars:
-        invoicing: WARN
+    com:
+      adamludzia:
+        invoicing: INFO
         invoicing.db: DEBUG
+        
+  spring:
+    profiles:
+      active: file
+    flyway:
+      enabled: false
+    mvc:
+      pathmatch:
+        matching-strategy: ant_path_matcher
+    security:
+      user:
+        name: piotr
+        password: abc123
+
+    invoicing-system:
+      allowedOrigins: http://localhost:4200
+      csrf:
+        disable: true
+        

@@ -1,9 +1,9 @@
 package com.adamludzia.controller;
 
 import com.adamludzia.model.Company;
-import java.sql.SQLException;
 import com.adamludzia.service.TaxCalcResult;
 import com.adamludzia.service.TaxCalcService;
+import java.sql.SQLException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;

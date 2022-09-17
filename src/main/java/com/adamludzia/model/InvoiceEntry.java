@@ -10,10 +10,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor

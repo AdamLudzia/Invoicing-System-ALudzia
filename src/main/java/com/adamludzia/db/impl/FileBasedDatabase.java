@@ -86,7 +86,7 @@ public class FileBasedDatabase<T extends IdInterface> implements Database<T> {
         try {
             var allTypes=fileService.readAllLines();
 
-            var updatedList = allTypes
+            var updatedList=allTypes
                 .stream()
                 .filter(line -> !containsId(line, id))
                 .collect(Collectors.toList());
